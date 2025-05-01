@@ -1,0 +1,22 @@
+## Interface: 110105
+
+## Title: |cff3abdf7Peavers|rCommons
+## IconTexture: Interface\AddOns\PeaversCommons\src\Media\Icon.tga
+
+## Notes: Common functionality for Peavers addons
+## Author: Peavers
+## Version: 1.0.0
+## SavedVariables: PeaversCommonsDB
+
+## Category-enUS: Peavers
+
+# First load LibStub
+src\LibStub.lua
+
+# Core components
+src\Core\Core.lua
+src\Core\Events.lua
+src\Core\SlashCommands.lua
+src\Core\FrameCore.lua
+src\Utils\Utils.lua
+src\UI\SupportUI.lua
