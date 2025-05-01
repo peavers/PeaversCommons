@@ -167,7 +167,7 @@ function Events:Init(addonName, initCallback, options)
             
             -- Auto-announce the addon is loaded (unless suppressed)
             if not suppressAnnouncement then
-                self:AnnounceLoaded(addon, "Ready " ..  announceMessage)
+                self:AnnounceLoaded(addon, ": " ..  announceMessage)
             end
             
             self:UnregisterEvent("ADDON_LOADED")
@@ -182,8 +182,6 @@ function Events:Init(addonName, initCallback, options)
             C_Timer.After(0.5, function()
                 -- Process any remaining addon registrations
                 if PeaversCommons.SupportUI then
-                    Utils.Print(PeaversCommons, "Initializing addon settings...")
-                    
                     -- Use InitializeAll if available (should always be the case)
                     if type(PeaversCommons.SupportUI.InitializeAll) == "function" then
                         PeaversCommons.SupportUI:InitializeAll()
