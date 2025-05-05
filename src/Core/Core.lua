@@ -1,5 +1,5 @@
 -- PeaversCommons Core
-local MAJOR, MINOR = "PeaversCommons-1.0", 1
+local MAJOR, MINOR = "PeaversCommons-1.0", 2
 local PeaversCommons = LibStub and LibStub:NewLibrary(MAJOR, MINOR) or {}
 
 if not PeaversCommons then return end -- Already loaded and no upgrade necessary
@@ -15,6 +15,13 @@ PeaversCommons.Utils = {}
 PeaversCommons.SupportUI = {}
 PeaversCommons.Patrons = {}
 PeaversCommons.PatronsUI = {}
+
+-- UI and Configuration Framework modules
+PeaversCommons.FrameCore = {}
+PeaversCommons.FrameUtils = {}
+PeaversCommons.ConfigUIUtils = {}
+PeaversCommons.ConfigManager = {}
+PeaversCommons.SettingsUI = {}
 
 -- Make the addon global
 _G.PeaversCommons = PeaversCommons

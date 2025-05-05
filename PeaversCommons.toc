@@ -19,6 +19,9 @@ src\Core\Config.lua
 src\Core\Events.lua
 src\Core\SlashCommands.lua
 src\Core\FrameCore.lua
+src\Core\FrameUtils.lua
+src\Core\ConfigUIUtils.lua
+src\Core\ConfigManager.lua
 src\Core\Patrons.lua
 src\Utils\Utils.lua
 src\UI\SupportUI.lua

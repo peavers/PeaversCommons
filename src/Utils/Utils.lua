@@ -67,19 +67,178 @@ end
 
 -- Get player info
 function Utils.GetPlayerInfo()
-    local name = UnitName("player")
-    local realm = GetRealmName()
+    local name, realm = UnitFullName("player")
+    realm = realm or GetRealmName()
     local fullName = name .. "-" .. realm
-    local class = select(2, UnitClass("player"))
+    local class, classFilename, classID = UnitClass("player")
     local level = UnitLevel("player")
+    
+    -- Get specialization info if available
+    local specIndex = GetSpecialization()
+    local specID, specName, specDesc, specIcon
+    if specIndex then
+        specID, specName, specDesc, specIcon = GetSpecializationInfo(specIndex)
+    end
     
     return {
         name = name,
         realm = realm, 
         fullName = fullName,
-        class = class,
-        level = level
+        class = classFilename,
+        classID = classID,
+        className = class,
+        level = level,
+        specIndex = specIndex,
+        specID = specID,
+        specName = specName
     }
+end
+
+-- Get character-realm key for saved variables
+function Utils.GetCharacterKey()
+    local info = Utils.GetPlayerInfo()
+    return info.name .. "-" .. info.realm
+end
+
+-- Format a number as a percentage with specified decimal places
+function Utils.FormatPercent(value, decimals)
+    decimals = decimals or 2
+    return string.format("%." .. decimals .. "f%%", value or 0)
+end
+
+-- Format a change value with a + or - sign
+function Utils.FormatChange(value, decimals)
+    decimals = decimals or 2
+    local format = "%." .. decimals .. "f"
+    if value > 0 then
+        return string.format("+" .. format, value)
+    elseif value < 0 then
+        return string.format(format, value)
+    else
+        return "0"
+    end
+end
+
+-- Round a number to the nearest decimal place
+function Utils.Round(value, decimals)
+    decimals = decimals or 0
+    local mult = 10 ^ decimals
+    return math.floor(value * mult + 0.5) / mult
+end
+
+-- Format time duration in seconds into human-readable string
+function Utils.FormatTime(seconds)
+    if not seconds or seconds <= 0 then
+        return "0s"
+    end
+
+    local days = math.floor(seconds / 86400)
+    seconds = seconds % 86400
+
+    local hours = math.floor(seconds / 3600)
+    seconds = seconds % 3600
+
+    local minutes = math.floor(seconds / 60)
+    seconds = math.floor(seconds % 60)
+
+    local parts = {}
+
+    if days > 0 then
+        table.insert(parts, days .. "d")
+    end
+
+    if hours > 0 then
+        table.insert(parts, hours .. "h")
+    end
+
+    if minutes > 0 then
+        table.insert(parts, minutes .. "m")
+    end
+
+    if seconds > 0 and #parts < 2 then
+        table.insert(parts, seconds .. "s")
+    end
+
+    -- Return at most 2 time units for readability
+    if #parts > 2 then
+        return table.concat({parts[1], parts[2]}, " ")
+    else
+        return table.concat(parts, " ")
+    end
+end
+
+-- Format money value (copper) into gold/silver/copper string
+function Utils.FormatMoney(copper)
+    if not copper or copper == 0 then
+        return "0g"
+    end
+    
+    local gold = math.floor(copper / 10000)
+    local silver = math.floor((copper % 10000) / 100)
+    local copperRemain = copper % 100
+    
+    local result = ""
+    if gold > 0 then
+        result = gold .. "g"
+    end
+    
+    if silver > 0 then
+        result = result .. " " .. silver .. "s"
+    end
+    
+    if copperRemain > 0 and (gold == 0 or silver == 0) then
+        result = result .. " " .. copperRemain .. "c"
+    end
+    
+    return result
+end
+
+-- Table utility functions
+
+-- Check if a table contains a value
+function Utils.TableContains(tbl, value)
+    if type(tbl) ~= "table" then return false end
+    
+    for _, v in pairs(tbl) do
+        if v == value then
+            return true
+        end
+    end
+    return false
+end
+
+-- Get a table's key for a specific value
+function Utils.TableFindKey(tbl, value)
+    if type(tbl) ~= "table" then return nil end
+    
+    for k, v in pairs(tbl) do
+        if v == value then
+            return k
+        end
+    end
+    return nil
+end
+
+-- Count the number of entries in a table
+function Utils.TableCount(tbl)
+    if type(tbl) ~= "table" then return 0 end
+    
+    local count = 0
+    for _ in pairs(tbl) do
+        count = count + 1
+    end
+    return count
+end
+
+-- Get all keys from a table
+function Utils.TableKeys(tbl)
+    if type(tbl) ~= "table" then return {} end
+    
+    local keys = {}
+    for k, _ in pairs(tbl) do
+        table.insert(keys, k)
+    end
+    return keys
 end
 
 return Utils
