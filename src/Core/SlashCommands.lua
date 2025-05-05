@@ -3,6 +3,35 @@ local SlashCommands = PeaversCommons.SlashCommands
 
 local commandHandlers = {}
 
+-- Function to open an addon's settings
+local function OpenAddonSettings(addonName)
+    -- Get the addon table
+    local addon = _G[addonName]
+    if not addon then return false end
+    
+    -- Try each potential settings opener function
+    if addon.ConfigUI and addon.ConfigUI.OpenOptions then
+        -- Method 1: Use the ConfigUI:OpenOptions() method
+        addon.ConfigUI:OpenOptions()
+        return true
+    elseif addon.Config and addon.Config.OpenOptionsCommand then
+        -- Method 2: Use the Config.OpenOptionsCommand() function
+        addon.Config.OpenOptionsCommand()
+        return true
+    elseif addon.directSettingsCategory then
+        -- Method 3: Use direct category reference
+        Settings.OpenToCategory(addon.directSettingsCategory)
+        return true
+    else
+        -- Fallback: Open Settings panel to Addons tab
+        SettingsPanel:Open()
+        if SettingsPanel.AddOnsTab and SettingsPanel.AddOnsTab.Click then
+            SettingsPanel.AddOnsTab:Click()
+        end
+        return true
+    end
+end
+
 function SlashCommands:Register(addonName, commandPrefix, handlers)
     local slashName = string.upper(commandPrefix)
     
@@ -12,11 +41,7 @@ function SlashCommands:Register(addonName, commandPrefix, handlers)
     
     if not commandHandlers[slashName].config then
         commandHandlers[slashName].config = function()
-            if Settings and Settings.OpenToCategory then
-                Settings.OpenToCategory(addonName)
-            elseif InterfaceOptionsFrame_OpenToCategory then
-                InterfaceOptionsFrame_OpenToCategory(addonName)
-            end
+            OpenAddonSettings(addonName)
         end
     end
     

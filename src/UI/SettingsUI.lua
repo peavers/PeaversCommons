@@ -128,10 +128,24 @@ function SettingsUI:CreateSettingsPages(addonRef, addonName, addonTitle, addonDe
         addonRef.directPanel = mainPanel
         addonRef.supportPanel = mainPanel  -- For PatronsUI compatibility
         
+        -- Make sure the addon global can find this category too
+        -- This is critical for slash commands
+        local globalAddon = _G[addonName]
+        if globalAddon then
+            globalAddon.directCategory = category
+            globalAddon.directPanel = mainPanel
+            globalAddon.supportPanel = mainPanel
+        end
+        
         -- Register settings panel as subcategory
         if settingsPanel then
             local settingsCategory = Settings.RegisterCanvasLayoutSubcategory(category, settingsPanel, settingsPanel.name)
             addonRef.directSettingsCategory = settingsCategory
+            
+            -- Store this in the global addon reference too for slash commands
+            if globalAddon then
+                globalAddon.directSettingsCategory = settingsCategory
+            end
         end
         
         -- Add patrons display automatically
