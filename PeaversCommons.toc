@@ -23,9 +23,12 @@ src\Core\Patrons.lua
 src\Utils\Utils.lua
 src\UI\SupportUI.lua
 src\UI\PatronsUI.lua
+src\UI\SettingsUI.lua
 
 # Templates
 src\Templates\patrons_template.lua
+src\Templates\settings_template.lua
+src\Templates\simplified_patrons.lua
 
 # Initialize sample patrons (comment out in production if needed)
 src\Core\PatronsInit.lua
