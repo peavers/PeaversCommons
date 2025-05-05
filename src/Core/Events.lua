@@ -141,6 +141,14 @@ function Events:Init(addonName, initCallback, options)
     -- Track if this addon has been initialized already
     local addonInitialized = false
     
+    -- Check if PeaversCommons itself is being initialized
+    if addonName == "PeaversCommons" then
+        -- Initialize Config module
+        if PeaversCommons.Config and PeaversCommons.Config.Initialize then
+            PeaversCommons.Config:Initialize()
+        end
+    end
+    
     self:RegisterEvent("ADDON_LOADED", function(event, loadedAddon)
         if loadedAddon == addonName and not addonInitialized then
             addonInitialized = true
@@ -150,6 +158,8 @@ function Events:Init(addonName, initCallback, options)
             
             -- Make sure addon has minimum properties needed
             if not addon.name then addon.name = addonName end
+            
+            -- Initialized
             
             -- Register with the SupportUI system if not suppressed
             if not suppressSupportUI then
@@ -185,6 +195,13 @@ function Events:Init(addonName, initCallback, options)
                     -- Use InitializeAll if available (should always be the case)
                     if type(PeaversCommons.SupportUI.InitializeAll) == "function" then
                         PeaversCommons.SupportUI:InitializeAll()
+                        
+                        -- Initialize PatronsUI for all addons after SupportUI is initialized
+                        C_Timer.After(0.5, function()
+                            if PeaversCommons.PatronsUI and PeaversCommons.PatronsUI.InitializeForAllAddons then
+                                PeaversCommons.PatronsUI:InitializeForAllAddons()
+                            end
+                        end)
                     end
                 end
             end)

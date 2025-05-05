@@ -157,11 +157,9 @@ function SupportUI:InitializeAddonSupport(addon)
                 -- This is the CRITICAL call to make the addon appear in Options > Addons
                 Settings.RegisterAddOnCategory(addon.mainCategory)
                 
-                -- Debug output for verification
-                Utils.Debug(PeaversCommons, "Registered addon category: " .. mainPanel.name)
+                -- Successfully registered
             else
                 -- If registration fails, try a direct approach
-                Utils.Debug(PeaversCommons, "Failed to register category normally, using direct registration for: " .. mainPanel.name)
                 
                 -- Create the category directly
                 local categoryData = Settings.CreateCategory(mainPanel.name, mainPanel.name, mainPanel.name)
@@ -169,11 +167,9 @@ function SupportUI:InitializeAddonSupport(addon)
                     addon.mainCategory = categoryData
                     addon.mainCategory.ID = mainPanel.name
                     Settings.RegisterAddOnCategory(categoryData)
-                    Utils.Debug(PeaversCommons, "Direct registration successful for: " .. mainPanel.name)
                 else
                     -- Last resort fallback
                     addon.mainCategory = mainPanel.name
-                    Utils.Debug(PeaversCommons, "All registration attempts failed for: " .. mainPanel.name)
                 end
             end
             
@@ -295,47 +291,17 @@ end
 -- Track if all addons have been initialized
 local allInitialized = false
 
--- Debugging function to print registered addons
-function SupportUI:DebugRegisteredAddons()
-    Utils.Debug(PeaversCommons, "--- REGISTERED ADDONS ---")
-    for addonName, addon in pairs(registeredAddons) do
-        Utils.Debug(PeaversCommons, "- " .. addonName)
-    end
-    
-    Utils.Debug(PeaversCommons, "--- REGISTERED SETTINGS CATEGORIES ---")
-    if Settings then
-        -- Safety check for required Settings methods
-        if Settings.GetCategory and Settings.GetCategoryCount and Settings.GetCategoryInfo then
-            local categoryCount = Settings.GetCategoryCount()
-            if categoryCount and type(categoryCount) == "number" then
-                for i = 1, categoryCount do
-                    local id = Settings.GetCategoryInfo(i)
-                    if id then
-                        local category = Settings.GetCategory(id)
-                        local name = category and category.name or "unknown"
-                        Utils.Debug(PeaversCommons, "- " .. tostring(id) .. ": " .. tostring(name))
-                    end
-                end
-            else
-                Utils.Debug(PeaversCommons, "No categories found")
-            end
-        else
-            Utils.Debug(PeaversCommons, "Settings API methods not available")
-        end
-    else
-        Utils.Debug(PeaversCommons, "Settings API not available")
-    end
+-- Method to get all registered addons
+function SupportUI:GetRegisteredAddons()
+    return registeredAddons
 end
 
 -- Try a direct approach to register an addon with the Settings UI
 function SupportUI:DirectRegisterAddon(addon)
     if not addon or not addon.name then return false end
     
-    Utils.Debug(PeaversCommons, "Attempting direct registration for: " .. addon.name)
-    
     -- Check if Settings API is available
     if not Settings then 
-        Utils.Debug(PeaversCommons, "Settings API not available, delaying registration")
         -- Try again later
         C_Timer.After(1, function() self:DirectRegisterAddon(addon) end)
         return false
@@ -354,7 +320,6 @@ function SupportUI:DirectRegisterAddon(addon)
     
     -- Step 3: Register with Settings UI
     if not Settings.RegisterCanvasLayoutCategory or not Settings.RegisterAddOnCategory then
-        Utils.Debug(PeaversCommons, "Settings registration methods not available, delaying")
         C_Timer.After(1, function() self:DirectRegisterAddon(addon) end)
         return false
     end
@@ -362,7 +327,6 @@ function SupportUI:DirectRegisterAddon(addon)
     -- Register the panel and get the category
     local category = Settings.RegisterCanvasLayoutCategory(panel, addon.name)
     if not category then
-        Utils.Debug(PeaversCommons, "Failed to create category for: " .. addon.name)
         return false
     end
     
@@ -373,12 +337,9 @@ function SupportUI:DirectRegisterAddon(addon)
     addon.mainCategory = category
     addon.mainPanel = panel
     
-    Utils.Debug(PeaversCommons, "Direct registration successful for: " .. addon.name)
-    
     -- Attempt to register any existing config panel as subcategory
     if addon.ConfigUI and addon.ConfigUI.panel then
         local configPanel = addon.ConfigUI.panel
-        Utils.Debug(PeaversCommons, "Registering config panel for: " .. addon.name)
         
         local configCategory = Settings.RegisterCanvasLayoutSubcategory(category, configPanel, configPanel.name or "Settings")
         if configCategory then
@@ -390,14 +351,12 @@ function SupportUI:DirectRegisterAddon(addon)
     if addon.SupportUI then
         -- If we have a pre-made support panel
         if addon.supportPanel then
-            Utils.Debug(PeaversCommons, "Registering existing support panel for: " .. addon.name)
             local supportCategory = Settings.RegisterCanvasLayoutSubcategory(category, addon.supportPanel, addon.supportPanel.name or "Support")
             if supportCategory then
                 addon.supportCategory = supportCategory
             end
         else
             -- Create a support panel if none exists
-            Utils.Debug(PeaversCommons, "Creating new support panel for: " .. addon.name)
             -- Directly create a simple support panel since CreateSupportPanel might not be defined
             local supportPanel = CreateFrame("Frame")
             supportPanel.name = "Support"
@@ -438,29 +397,12 @@ function SupportUI:InitializeAll()
         return
     end
     
-    -- Count registered addons
-    local count = 0
-    for _, _ in pairs(registeredAddons) do
-        count = count + 1
-    end
-    Utils.Debug(PeaversCommons, "Starting SupportUI:InitializeAll() for " .. count .. " addons")
-    
-    -- First, dump debug info
-    self:DebugRegisteredAddons()
-    
     -- Skip normal initialization and use direct approach for all addons
     -- This provides the most reliable way to register with Settings
     C_Timer.After(0.5, function()
-        Utils.Debug(PeaversCommons, "Using direct registration for all addons")
         for addonName, addon in pairs(registeredAddons) do
             self:DirectRegisterAddon(addon)
         end
-        
-        -- Print post-initialization debug info
-        C_Timer.After(1, function()
-            Utils.Debug(PeaversCommons, "--- POST-INITIALIZATION STATE ---")
-            self:DebugRegisteredAddons()
-        end)
     end)
     
     allInitialized = true

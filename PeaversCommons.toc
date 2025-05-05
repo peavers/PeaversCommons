@@ -15,8 +15,17 @@ src\LibStub.lua
 
 # Core components
 src\Core\Core.lua
+src\Core\Config.lua
 src\Core\Events.lua
 src\Core\SlashCommands.lua
 src\Core\FrameCore.lua
+src\Core\Patrons.lua
 src\Utils\Utils.lua
 src\UI\SupportUI.lua
+src\UI\PatronsUI.lua
+
+# Templates
+src\Templates\patrons_template.lua
+
+# Initialize sample patrons (comment out in production if needed)
+src\Core\PatronsInit.lua

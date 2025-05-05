@@ -13,6 +13,8 @@ PeaversCommons.Events = {}
 PeaversCommons.SlashCommands = {}
 PeaversCommons.Utils = {}
 PeaversCommons.SupportUI = {}
+PeaversCommons.Patrons = {}
+PeaversCommons.PatronsUI = {}
 
 -- Make the addon global
 _G.PeaversCommons = PeaversCommons
