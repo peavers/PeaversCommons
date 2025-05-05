@@ -1,15 +1,12 @@
--- PeaversCommons Utils Module
 local PeaversCommons = _G.PeaversCommons
 local Utils = PeaversCommons.Utils
 
--- Debug printing (only when debug is enabled)
 function Utils.Debug(addon, ...)
     if addon and addon.Config and addon.Config.DEBUG_ENABLED then
         print("|cFF00FFFF[" .. addon.name .. " Debug]|r", ...)
     end
 end
 
--- User-facing print
 function Utils.Print(addon, ...)
     if addon and addon.name then
         print("|cFF00FF00[" .. addon.name .. "]|r", ...)
@@ -18,7 +15,6 @@ function Utils.Print(addon, ...)
     end
 end
 
--- Table functions
 function Utils.DeepCopy(orig)
     local orig_type = type(orig)
     local copy
@@ -49,7 +45,6 @@ function Utils.MergeDefaults(target, defaults)
     return target
 end
 
--- Format numbers with commas
 function Utils.FormatNumber(num)
     if num >= 1000000 then
         return string.format("%.1fM", num / 1000000)
@@ -60,12 +55,10 @@ function Utils.FormatNumber(num)
     end
 end
 
--- Check if player is in combat
 function Utils.IsInCombat()
     return InCombatLockdown() or UnitAffectingCombat("player")
 end
 
--- Get player info
 function Utils.GetPlayerInfo()
     local name, realm = UnitFullName("player")
     realm = realm or GetRealmName()
@@ -73,7 +66,6 @@ function Utils.GetPlayerInfo()
     local class, classFilename, classID = UnitClass("player")
     local level = UnitLevel("player")
     
-    -- Get specialization info if available
     local specIndex = GetSpecialization()
     local specID, specName, specDesc, specIcon
     if specIndex then
@@ -94,19 +86,16 @@ function Utils.GetPlayerInfo()
     }
 end
 
--- Get character-realm key for saved variables
 function Utils.GetCharacterKey()
     local info = Utils.GetPlayerInfo()
     return info.name .. "-" .. info.realm
 end
 
--- Format a number as a percentage with specified decimal places
 function Utils.FormatPercent(value, decimals)
     decimals = decimals or 2
     return string.format("%." .. decimals .. "f%%", value or 0)
 end
 
--- Format a change value with a + or - sign
 function Utils.FormatChange(value, decimals)
     decimals = decimals or 2
     local format = "%." .. decimals .. "f"
@@ -119,14 +108,12 @@ function Utils.FormatChange(value, decimals)
     end
 end
 
--- Round a number to the nearest decimal place
 function Utils.Round(value, decimals)
     decimals = decimals or 0
     local mult = 10 ^ decimals
     return math.floor(value * mult + 0.5) / mult
 end
 
--- Format time duration in seconds into human-readable string
 function Utils.FormatTime(seconds)
     if not seconds or seconds <= 0 then
         return "0s"
@@ -159,7 +146,6 @@ function Utils.FormatTime(seconds)
         table.insert(parts, seconds .. "s")
     end
 
-    -- Return at most 2 time units for readability
     if #parts > 2 then
         return table.concat({parts[1], parts[2]}, " ")
     else
@@ -167,7 +153,6 @@ function Utils.FormatTime(seconds)
     end
 end
 
--- Format money value (copper) into gold/silver/copper string
 function Utils.FormatMoney(copper)
     if not copper or copper == 0 then
         return "0g"
@@ -193,9 +178,6 @@ function Utils.FormatMoney(copper)
     return result
 end
 
--- Table utility functions
-
--- Check if a table contains a value
 function Utils.TableContains(tbl, value)
     if type(tbl) ~= "table" then return false end
     
@@ -207,7 +189,6 @@ function Utils.TableContains(tbl, value)
     return false
 end
 
--- Get a table's key for a specific value
 function Utils.TableFindKey(tbl, value)
     if type(tbl) ~= "table" then return nil end
     
@@ -219,7 +200,6 @@ function Utils.TableFindKey(tbl, value)
     return nil
 end
 
--- Count the number of entries in a table
 function Utils.TableCount(tbl)
     if type(tbl) ~= "table" then return 0 end
     
@@ -230,7 +210,6 @@ function Utils.TableCount(tbl)
     return count
 end
 
--- Get all keys from a table
 function Utils.TableKeys(tbl)
     if type(tbl) ~= "table" then return {} end
     
