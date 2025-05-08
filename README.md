@@ -2,6 +2,9 @@
 
 Common library for Peavers addons.
 
+### New!
+Check out [peavers.io](https://peavers.io) and [bootstrap.peavers.io](https://bootstrap.peavers.io) for all my WoW addons and support.
+
 ## Features
 
 - Standardized event handling
@@ -41,12 +44,12 @@ PeaversCommons.SlashCommands:Register(addonName, "myslash", {
 -- Initialize addon
 PeaversCommons.Events:Init(addonName, function()
     -- Initialize your addon components
-    
+
     -- Register events
     PeaversCommons.Events:RegisterEvent("PLAYER_ENTERING_WORLD", function()
         -- Your event handler
     end)
-    
+
     -- Set up update timers
     PeaversCommons.Events:RegisterOnUpdate(0.5, function(elapsed)
         -- Do something periodically
@@ -208,7 +211,7 @@ function MyAddon:InitializeFrame()
         backgroundColor = {r = 0, g = 0, b = 0, a = 0.5},
         createBars = true
     }
-    
+
     MyAddon.Core = PeaversCommons.FrameCore:New(MyAddon, options)
     MyAddon.Core:Initialize()
 end
@@ -252,8 +255,8 @@ yPos = newY - 10
 
 -- Create sliders, color pickers, etc. with consistent styling
 local container, slider = ConfigUIUtils.CreateSlider(
-    panel.content, "MySlider", "Width", 50, 300, 10, 
-    200, 400, 
+    panel.content, "MySlider", "Width", 50, 300, 10,
+    200, 400,
     function(value)
         -- Handle value change
     end
@@ -322,21 +325,21 @@ local PeaversCommons = _G.PeaversCommons
 function MyAddon:InitializeSettings()
     -- Create the settings pages factory
     MyAddon.settingsPages = PeaversCommons.SettingsUI.CreateSettingsPages(MyAddon)
-    
+
     -- Add a main settings page
     MyAddon.settingsPages:AddMainPage(function(mainPage)
         -- Add UI elements to the main page
         -- Returns the main page panel object
         return MyAddon.ConfigUI:CreateMainOptions(mainPage)
     end)
-    
+
     -- Add a sub-page
     MyAddon.settingsPages:AddSubPage("Advanced", function(subPage)
         -- Add UI elements to the sub-page
         -- Returns the sub-page panel object
         return MyAddon.ConfigUI:CreateAdvancedOptions(subPage)
     end)
-    
+
     -- Register all pages with WoW's Settings UI
     MyAddon.settingsPages:Register()
 end
