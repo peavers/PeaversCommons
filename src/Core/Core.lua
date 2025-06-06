@@ -1,4 +1,4 @@
-local MAJOR, MINOR = "PeaversCommons-1.0", 2
+local MAJOR, MINOR = "PeaversCommons-1.0", 3
 local PeaversCommons = LibStub and LibStub:NewLibrary(MAJOR, MINOR) or {}
 
 if not PeaversCommons then return end
@@ -18,6 +18,11 @@ PeaversCommons.FrameUtils = {}
 PeaversCommons.ConfigUIUtils = {}
 PeaversCommons.ConfigManager = {}
 PeaversCommons.SettingsUI = {}
+
+PeaversCommons.BarManager = {}
+PeaversCommons.StatBar = {}
+PeaversCommons.TitleBar = {}
+PeaversCommons.BarStyles = {}
 
 _G.PeaversCommons = PeaversCommons
 
