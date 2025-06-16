@@ -21,10 +21,37 @@ function PatronsUI:CreatePatronsFrame(parentFrame)
     
     -- Container frame
     local patronsFrame = CreateFrame("Frame", nil, parentFrame)
-    patronsFrame:SetPoint("TOP", 0, -150)  -- Position below other support UI elements
+    patronsFrame:SetPoint("TOP", 0, -260)  -- Position below other support UI elements (adjusted for UI Vault + margins)
     patronsFrame:SetPoint("LEFT", PADDING, 0)
     patronsFrame:SetPoint("RIGHT", -PADDING, 0)
     patronsFrame:SetHeight(200)  -- Initial height, will be adjusted as needed
+    
+    -- UI Vault callout frame
+    local uiVaultFrame = CreateFrame("Frame", nil, patronsFrame)
+    uiVaultFrame:SetPoint("BOTTOM", patronsFrame, "TOP", 0, 50)  -- 50px margin below
+    uiVaultFrame:SetPoint("LEFT", 0, 0)
+    uiVaultFrame:SetPoint("RIGHT", 0, 0)
+    uiVaultFrame:SetHeight(60)
+    
+    -- UI Vault title
+    local uiVaultTitle = uiVaultFrame:CreateFontString(nil, "ARTWORK", "GameFontNormalLarge")
+    uiVaultTitle:SetPoint("TOP", 0, 0)
+    uiVaultTitle:SetText("NEW: UI Vault")
+    uiVaultTitle:SetTextColor(0.3, 0.8, 1.0)  -- Light blue color
+    
+    -- UI Vault description
+    local uiVaultDesc = uiVaultFrame:CreateFontString(nil, "ARTWORK", "GameFontHighlight")
+    uiVaultDesc:SetPoint("TOP", uiVaultTitle, "BOTTOM", 0, -8)
+    uiVaultDesc:SetPoint("LEFT", uiVaultFrame, "LEFT", PADDING, 0)
+    uiVaultDesc:SetPoint("RIGHT", uiVaultFrame, "RIGHT", -PADDING, 0)
+    uiVaultDesc:SetJustifyH("CENTER")
+    uiVaultDesc:SetText("One-click backup and restore of all WoW addons")
+    
+    -- UI Vault URL
+    local uiVaultURL = uiVaultFrame:CreateFontString(nil, "ARTWORK", "GameFontNormal")
+    uiVaultURL:SetPoint("TOP", uiVaultDesc, "BOTTOM", 0, -8)
+    uiVaultURL:SetText("Get it at |cff3abdf7vault.peavers.io|r")
+    uiVaultURL:SetTextColor(1, 1, 1)
     
     -- Patrons title
     local titleText = patronsFrame:CreateFontString(nil, "ARTWORK", "GameFontNormalLarge")
@@ -74,8 +101,8 @@ function PatronsUI:CreatePatronsFrame(parentFrame)
         -- Set height based on text height
         self.patronsList:SetHeight(self.patronsList:GetStringHeight() + PADDING)
         
-        -- Update total frame height
-        self:SetHeight(self.titleText:GetHeight() + SECTION_SPACING + self.patronsList:GetHeight() + PADDING)
+        -- Update total frame height (including UI Vault section above with margins)
+        self:SetHeight(self.titleText:GetHeight() + SECTION_SPACING + self.patronsList:GetHeight() + PADDING + 60 + 100)  -- 60 for UI Vault + 100 for margins (50 top + 50 bottom)
         
         -- Flag as updated
         self.isUpdated = true

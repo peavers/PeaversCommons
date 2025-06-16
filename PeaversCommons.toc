@@ -37,3 +37,6 @@ src\Templates\simplified_patrons.lua
 
 # Initialize sample patrons (comment out in production if needed)
 src\Core\PatronsInit.lua
+
+# Initialize PeaversCommons greeting
+src\Init.lua
