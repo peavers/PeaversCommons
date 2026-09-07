@@ -59,6 +59,7 @@ local function Build()
 
     -- Blizzard's own dialog border, so this reads as part of Edit Mode.
     local border = CreateFrame("Frame", nil, panel, "DialogBorderTranslucentTemplate")
+    ---@diagnostic disable-next-line: param-type-mismatch
     border:SetAllPoints(panel)
     panel.Border = border
 
